@@ -1,0 +1,40 @@
+main:
+  - title: "Current Projects"
+    url: /projects
+  - title: "SpliceX Documentation"
+    url: /SpliceX
+  # - title: "Worldcomm Overview"
+  #   url: /worldcomm
+
+docs:
+  - title: Column definitions & overview
+    children:
+      - title: "Column definitions"
+        url: /NFL-part-2#column-definitions
+      - title: "Handling categorical columns"
+        url: /NFL-part-2#handling-categorical-columns
+      - title: "Missing values"
+        url: /NFL-part-2#missing-values
+
+  - title: Correlation matrix
+    children:
+      - title: "Analysis of the correlation matrix"
+        url: /NFL-part-2#analysis-of-the-correlation-matrix
+      - title: "Skewness"
+        url: /NFL-part-2#skewness
+      - title: "Removing similar columns"
+        url: /NFL-part-2#removing-similar-columns
+      - title: "Reducing sig figs"
+        url: /NFL-part-2#reducing-sig-figs
+      - title: "Removing additional columns using domain knowledge"
+        url: /NFL-part-2#removing-additional-columns-using-domain-knowledge
+
+  - title: Creating meta-features
+    children:
+      - title: "Reducing columns via UMAP"
+        url: /NFL-part-2#reducing-columns-via-umap
+      - title: ""
+        url: /NFL-part-2#
+  - title: Removing additional columns using domain knowledge
+    children:
+      - title: ""
