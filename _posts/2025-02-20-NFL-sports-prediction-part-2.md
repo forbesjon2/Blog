@@ -21,12 +21,17 @@ permalink: "/NFL-part-2"
 }
 </style>
 
+# Overview
+
+We remove irrelevant columns to simplify the data, helping the model develop hypotheses faster with our small NFL dataset.
+
+
 **Note** Although there is a dedicated file `NFL_EDA-2.ipynb` for this step of the process, some of the EDA is performed in the previous `SlidingWindow-1.ipynb` file.
 {: .notice}
 
 
 
-## Column definitions
+## Column definitions before EDA
 {% highlight python %}
 cont_cols = [
     'D_datediff',              # Days since last game (Home - visitor)
@@ -229,3 +234,205 @@ The chart above shows the degree to which the home or away team won or lost. A d
 In the above diagram, we see that most of the time, a kick or punt does not result in a touchdown. There are a few noticable clusters where a gradient appears to be present.
 <br /><br />
 A further UMAP analysis in 2d
+
+
+<br /><br />
+
+# Feature importance using Leshy & BoostAGroota
+
+To simplify the dataset further, I'll remove the common columns from the last 15 records from both Leshy & BoostAGroota
+
+![Leshy](/assets/2025/NFL/Leshy.png){: width="700"}
+<br /><br />
+
+![BoostAGroota](/assets/2025/NFL/BoostAGroota.png){: width="700"}
+<br /><br />
+
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-lvop{background-color:#34cdf9;border-color:inherit;font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-c3ow{border-color:inherit;text-align:center;vertical-align:top}
+.tg .tg-vr9o{background-color:#6665cd;border-color:inherit;font-weight:bold;text-align:center;vertical-align:top}
+</style>
+<table class="tg"><thead>
+  <tr>
+    <th class="tg-lvop">Leshy</th>
+    <th class="tg-lvop">BoostAGroota</th>
+  </tr></thead>
+<tbody>
+  <tr>
+    <td class="tg-c3ow">D_scoring_fgp</td>
+    <td class="tg-c3ow">D_rushing_yds</td>
+  </tr>
+  <tr>
+    <td class="tg-vr9o">D_Net_Pass_Yards</td>
+    <td class="tg-vr9o">D_Cmp</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">D_Yd</td>
+    <td class="tg-c3ow">D_receiving_lng</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">D_def_interceptions_int</td>
+    <td class="tg-c3ow">D_def_interceptions_td</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">D_sacked</td>
+    <td class="tg-vr9o">D_INT</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">D_rushing_lng</td>
+    <td class="tg-c3ow">D_passing_td</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">D_passing_int</td>
+    <td class="tg-vr9o">D_tackles_solo</td>
+  </tr>
+  <tr>
+    <td class="tg-vr9o">D_tackles_solo</td>
+    <td class="tg-vr9o">D_Net_Pass_Yards</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">D_passing_att</td>
+    <td class="tg-vr9o">D_TD</td>
+  </tr>
+  <tr>
+    <td class="tg-vr9o">D_Cmp</td>
+    <td class="tg-c3ow">D_rushing_td</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">D_passing_sk</td>
+    <td class="tg-c3ow">D_Lost</td>
+  </tr>
+  <tr>
+    <td class="tg-vr9o">D_Third_Down_Conv</td>
+    <td class="tg-c3ow">D_Att</td>
+  </tr>
+  <tr>
+    <td class="tg-vr9o">D_TD</td>
+    <td class="tg-c3ow">D_penalties</td>
+  </tr>
+  <tr>
+    <td class="tg-vr9o">D_INT</td>
+    <td class="tg-vr9o">D_Third_Down_Conv</td>
+  </tr>
+  <tr>
+    <td class="tg-vr9o">D_datediff</td>
+    <td class="tg-vr9o">D_datediff</td>
+  </tr>
+</tbody></table>
+
+
+
+## Column definitions after EDA
+{% highlight python %}
+cont_cols = [
+    # 'D_datediff',              # Days since last game (Home - visitor)
+    
+    # first downs
+    'D_First_Downs',
+    
+    # Basic Stats
+    'D_Rush',                  # Number of running plays attempted
+    'D_Yds',                   # Yards gained through running plays
+    'D_TDs',                   # Touchdowns scored via running plays
+    # 'D_Cmp',                   # Completions (# of successful passes)
+    'D_Att',                   # Attempts (# of passes thrown, completed or not)
+    'D_Yd',                    # Yards (Yards the passes have covered)
+    # 'D_TD',                    # Touchdowns
+    # 'D_INT',                   # Interceptions
+    'D_Sacked',                # Number of times quarterback was tackled behind line of scrimmage
+    'D_Sacked_Yards',                 # Yards lost from sacks
+    # 'D_Net_Pass_Yards',        # Net passing yards (total yds - yards lost due to sacks)
+    'D_Total_Yards',           # Total yards gained (net pass yards + rushing yds)
+    'D_Fumbles',               # Number of times ball was fumbled
+    'D_Lost',                  # Number of times the team lost possession of the ball due to a fumble
+    'D_Turnovers',             # Total number of turnovers, includes interceptions & fumbles lost
+    'D_Penalties',             # Number of penalties committed by the team
+    # 'D_Third_Down_Conv',       # 3rd down conversion percentage
+    'D_Fourth_Down_Conv',      # 3rd down conversion percentage
+    'D_Time_of_Possession',    # Time of possession in minutes
+    
+    
+    # Passing Detailed
+    'D_passing_att',           # Passes attempted
+    'D_passing_cmp',           # Passes completed
+    'D_passing_int',           # Interceptions thrown
+    'D_passing_lng',           # Longest completed pass
+    'D_passing_sk',            # Passing times sacked
+    'D_passing_td',            # Passing touchdowns
+    # 'D_passing_yds',           # Yards gained by passing
+    
+    # Receiving
+    'D_receiving_lng',         # Longest reception
+    # 'D_receiving_td',          # Receiving touchdowns
+    # 'D_receiving_yds',         # Receiving yards
+    
+    # Rushing Detailed
+    'D_rushing_att',           # Rushing attempts (sacks not included)
+    'D_rushing_lng',           # Longest rushing attempt (sacks not included)
+    'D_rushing_td',            # Rushing touchdowns
+    'D_rushing_yds',           # Rushing yards
+    
+    # Defense interceptions
+    'D_def_interceptions_int', # Passes intercepted on defense
+    # 'D_def_interceptions_lng', # Longest interception returned
+    'D_def_interceptions_td',  # Interceptions returned for touchdown
+    'D_def_interceptions_yds', # Yards interceptions were returned
+    
+    # Defense fumbles
+    'D_fumbles_ff',            # Num of times forced a fumble by the opposition recovered by either team
+    'D_fumbles_fr',            # Fumbles recovered by player or team
+    'D_fumbles_td',            # Fumbles recovered resulting in touchdown for receiver
+    'D_fumbles_yds',           # Yards recovered fumbles were returned
+    
+    # Defense tackles
+    'D_sk',                    # Sacks
+    'D_tackles_ast',           # Assists on tackles
+    'D_tackles_comb',          # Solo + ast tackles
+    # 'D_tackles_solo',          # Tackles
+
+    # ----------------- Kick & Punt returns are combined in EDA ----------------
+    ## Kick Returns
+    #'D_kick_returns_lng',      # Longest kickoff return
+    #'D_kick_returns_rt',       # Kickoff returns 
+    #'D_kick_returns_td',       # Kickoffs returned for a touchdown
+    #'D_kick_returns_yds',      # Yardage for kickoffs returned
+    ## Punt Returns
+    #'D_punt_returns_lng',      # Longest punt return
+    #'D_punt_returns_ret',      # Punts returned
+    #'D_punt_returns_td',       # Punts returned for touchdown
+    #'D_punt_returns_yds',      # Punts return yardage
+    
+    # Kick & Punt returns combined (Created as a result of EDA)
+    #'kick_punt_returns_lng',   # Does not appear on final CSV (UMAP)
+    #'kick_punt_returns_rt',    # Does not appear on final CSV (UMAP)
+    #'kick_punt_returns_td',    # Does not appear on final CSV (UMAP)
+    #'kick_punt_returns_yds',   # Does not appear on final CSV (UMAP)
+    'kick_punt_umap_dim_1',  # Appears on final CSV (UMAP)
+    'kick_punt_umap_dim_2',  # Appears on final CSV (UMAP)
+    
+    # Punting / Scoring
+    # 'D_punting_lng',         # Longest punt
+    
+    'D_punting_pnt',           # Times punted
+    # 'D_punting_yds',         # Total punt yardage
+    'D_punting_avg',           # Total punt yardage / number of punts
+    
+    'D_scoring_fga',           # Field goals attempted
+    # 'D_scoring_fgm',         # Field goals made
+    'D_scoring_fgp',           # Field goals made / Field goals attempted
+
+    'D_scoring_xpa',           # Extra points attempted
+    # 'D_scoring_xpm',         # Extra points made
+    'D_scoring_xpp',           # Extra pints made / Extra points attempted
+    
+    # Additional, calculated metrics
+    'D_pythagorean',           # NFL variation of Bill James pythagorean expectation (from wikipedia)
+]
+{% endhighlight %}

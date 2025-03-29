@@ -24,7 +24,7 @@ permalink: "/NFL-part-1"
 
 <!-- Anyways I hope you enjoy this four part walkthrough. I learned a lot putting it together, especially how to spell the word 'possession'. -->
 
-The structure of this page will be an informational summary followed by a walkthrough of the _SlidingWindowNFL-1_ file.
+This page will be an informational summary followed by a walkthrough of the _SlidingWindowNFL-1_ file.
 
 # Informational Summary
 
@@ -133,12 +133,12 @@ The input data contains a list of game data between the home and visitor team.
 </table>
 </div>
 
+<br /><br />
 
 
+<h3>We transform the dataset into one that is useful for making predictions by:</h3>
 
-We transform this dataset into one that is useful for making predictions by:<br /><br />
-
-Defining the Y values
+1\. Defining the Y values
 : This will be assigned as which team won the current game. Represented under the H_won column
 : {% highlight python %}
 # H_Won column
@@ -146,10 +146,11 @@ df['H_Won'] = np.where(df['H_Final'] > df['V_Final'], 1.0, 0.0)
 {% endhighlight %}
 
 
-Applying an exponential moving average
-: This is applied to the majority of columns. For predicting game _n_ of a particular season, we use game data from the first game of the season to the _n-1_ game (where _n_ is the number of games performed by the team during the season). Additionally, we apply a minimum window of 4 This can be visualized in the following table:<br /><br />
+2\. Applying an exponential moving average
+: This is applied to most columns. For predicting game _n_ of a season, we use game data from the first game to the _n-1_ game (where _n_ is the number of games performed by the team during the season). Then we apply a minimum window of 4. The table below shows a visual example:<br /><br />
 
-: | Game | Data before EMA | EMA (ema_span=min(7, input data length)) |
+
+| Game | Data before EMA | EMA (ema_span=min(7, input data length)) |
 |------|-----------------|-----------------------------------------|
 | 1    | 436             | 436.000000                             |
 | 2    | 489             | 466.285714                             |
@@ -160,26 +161,28 @@ Applying an exponential moving average
 | 7    | 257             | 322.464746                             |
 | 8    | 286             | **312.334379**                         |
 
+
 <br />
-: In this table, the bold row item would then be used as an input to calculate 
+: In this table, the bold row item would be used as an input to calculate 
 
 : We use pandas.DataFrame.ewm with the following setup:
-: {% highlight python %}
+{% highlight python %}
 ema_span = 7   # To place influence on the past 7 games
 ema = dataframe_val['value'].ewm(span=min(ema_span, len(home_col_list)), adjust=True).mean().iloc[-1]
 {% endhighlight %}
 <br /><br />
-: Here is a [helpful guide](https://medium.com/@whyamit404/understanding-pandas-ewm-what-it-does-and-why-its-useful-f4d0f7f0334d) to the different parameters that can be adjusted for pandas ewm function. I applied this based on best judgement and wanted to avoid placing too much weight on more recent games since this is being applied across a large number of columns and the data might be highly variable.
+: Here is a [helpful guide](https://medium.com/@whyamit404/understanding-pandas-ewm-what-it-does-and-why-its-useful-f4d0f7f0334d) to the different parameters that can be adjusted for pandas ewm function. I applied this based on best judgement and wanted to avoid placing too much weight on more recent games since this is being applied across many columns and the data might be highly variable.
 
-Reducing columns between the home & visitor team into difference columns.
-: Currently, the model will have a hard time inferring the relationship between the different sets of columns. For a dataset of around 5,000 records, it seems unreasonable to suggest that the model will understand that a strong majority of the 100 columns passed in are actually pairs of columns and for which team each column represents (ex: H_Yds & V_Yds where Yds represents the yards gained through running plays). To help the model more easily understand the relationship between each column, we will combine related columns by replacing two related columns into the difference between the home and visitor team. <br /><br />
-: Using our _Yds variable, if the home team has a greater amount of yards gained through running plays, the D_Yds variable will be a positive number. Otherwise, it will be 0 or negative. This adjustment reduces our total column count from around 100 to around 50
-
-
-Maintaining an ordered dataset
-: Since we are dealing with time series data, we cannot apply stratified K-fold cross validation ensuring that all classes are accounted for. This isn't really necessary to begin with since we can assume the two prediction classes (win or loss) are
+3\. Reducing columns between the home & visitor team into difference columns.
+: Currently, the model will have a hard time understanding the relationship between each set of columns. For a small dataset of around 5,000 records, the model won't understand that we are passing in pairs of columns and for which team each column represents (ex: H_Yds & V_Yds where Yds represents the yards gained through running plays). To help the model more easily understand the relationship between each column, we will combine related columns by replacing two related columns into the difference between the home and visitor team. <br /><br />
+: Using our _Yds example, if the home team has a greater amount of yards gained through running plays, the D_Yds variable will be a positive number. Otherwise, it will be 0 or negative. This adjustment reduces our total column count from around 100 to around 50
 
 
+4\. Maintaining an ordered dataset
+: Since we are dealing with time series data, we cannot apply stratified K-fold cross validation ensuring that all classes are accounted for. This isn't necessary to begin with since we can assume the two prediction classes (win or loss) are roughly equal in its own regard.
+
+<br />
+<br />
 # Walkthrough of the important parts in _SlidingWindowNFL-1_
 
 ## 1. Create additional columns
@@ -246,7 +249,7 @@ for row in df.itertuples():
 Here we do the following to reformat the df. <br />
 
 Enforce minimum_window to update df or drop row
-: Example: With `minimum_window=4`, if team one or team two in the 2001 season is on game n of the season, if n is &lt; minimum_window, then the game will be ignored. Otherwise, the data points will be used to retrieve an EMA of all of the previous games in the current season for both teams. This is used to calculatee most of the columns<br /><br />
+: Example: With `minimum_window=4`, if team one or team two in the 2001 season is on game n of the season, if n is &lt; minimum_window, then the game will be ignored. Otherwise, the data points will be used to retrieve an EMA of all of the previous games in the current season for both teams. This is used to calculatee most columns<br /><br />
 : After df is composed, each row will contain data up to (not including) the current game<br /><br />
 : This allows us to access the current data of game n taking into account all previous games not including game n. Knowing this, we can train a predictive model on each row without data leakage provided the data is offered sequentially.<br /><br />
 
