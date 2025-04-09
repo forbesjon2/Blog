@@ -145,7 +145,7 @@ Gradient boosting and ANN are somewhat sensitive to multicollinearity so a good 
 ![Correlation Matrix 1](/assets/2025/NFL/CorrelationMatrixOne.png)
 
 
-I selected the columns to retain based on my best judgment. The bold & highlighted cells will be preserved and the rest will be ignored.
+I selected the columns to retain based on my best judgment. The bold & highlighted cells will be removed and the rest will stay.
 
 <style type="text/css">
 .tg  {border-collapse:collapse;border-spacing:0;}
@@ -153,9 +153,9 @@ I selected the columns to retain based on my best judgment. The bold & highlight
   overflow:hidden;padding:10px 5px;word-break:normal;}
 .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
   font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg .tg-8jgo{border-color:#ffffff;text-align:center;vertical-align:top}
+.tg .tg-8jgo{background-color:#6200c9;border-color:#ffffff;font-weight:bold;text-align:center;vertical-align:top}
 .tg .tg-bf0q{background-color:#3166ff;border-color:#ffffff;font-weight:bold;text-align:center;vertical-align:top}
-.tg .tg-o9ia{background-color:#6200c9;border-color:#ffffff;font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-o9ia{border-color:#ffffff;text-align:center;vertical-align:top}
 </style>
 <table class="tg"><thead>
   <tr>
@@ -172,12 +172,12 @@ I selected the columns to retain based on my best judgment. The bold & highlight
   <tr>
     <td class="tg-8jgo">D_def_interceptions_lng</td>
     <td class="tg-o9ia">D_def_interceptions_yds</td>
-    <td class="tg-8jgo"></td>
+    <td class="tg-o9ia"></td>
   </tr>
   <tr>
     <td class="tg-o9ia">D_passing_td</td>
     <td class="tg-8jgo">D_receiving_td</td>
-    <td class="tg-8jgo"></td>
+    <td class="tg-o9ia"></td>
   </tr>
 </tbody></table>
 
@@ -187,9 +187,9 @@ I selected the columns to retain based on my best judgment. The bold & highlight
 **Creating meta-features from pairs of similar columns**
 We have two sets of _X attempts + X made_ columns. I decided to replace the _X made_ columns with the percentage:
 
-scoring_fgm / scoring_fga = scoring_fgp
-scoring_xpm / scoring_xpa = scoring_xpp
-punting_yds / punting_pnt = punting_avg
+scoring_fgm / scoring_fga = scoring_fgp <br />
+scoring_xpm / scoring_xpa = scoring_xpp <br />
+punting_yds / punting_pnt = punting_avg <br />
 <br/><br/>
 
 ### Reducing sig figs
@@ -248,92 +248,110 @@ To simplify the dataset further, I'll remove the common columns from the last 15
 ![BoostAGroota](/assets/2025/NFL/BoostAGroota.png){: width="700"}
 <br /><br />
 
-
 <style type="text/css">
 .tg  {border-collapse:collapse;border-spacing:0;}
 .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
   overflow:hidden;padding:10px 5px;word-break:normal;}
 .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
   font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg .tg-lvop{background-color:#34cdf9;border-color:inherit;font-weight:bold;text-align:center;vertical-align:top}
 .tg .tg-c3ow{border-color:inherit;text-align:center;vertical-align:top}
-.tg .tg-vr9o{background-color:#6665cd;border-color:inherit;font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-ez8y{background-color:#3166ff;border-color:inherit;font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-s8l9{background-color:#6665cd;border-color:inherit;text-align:center;vertical-align:top}
 </style>
 <table class="tg"><thead>
   <tr>
-    <th class="tg-lvop">Leshy</th>
-    <th class="tg-lvop">BoostAGroota</th>
+    <th class="tg-ez8y">Leshy</th>
+    <th class="tg-ez8y">BoostAGroota</th>
   </tr></thead>
 <tbody>
   <tr>
-    <td class="tg-c3ow">D_scoring_fgp</td>
-    <td class="tg-c3ow">D_rushing_yds</td>
-  </tr>
-  <tr>
-    <td class="tg-vr9o">D_Net_Pass_Yards</td>
-    <td class="tg-vr9o">D_Cmp</td>
-  </tr>
-  <tr>
-    <td class="tg-c3ow">D_Yd</td>
-    <td class="tg-c3ow">D_receiving_lng</td>
-  </tr>
-  <tr>
-    <td class="tg-c3ow">D_def_interceptions_int</td>
-    <td class="tg-c3ow">D_def_interceptions_td</td>
-  </tr>
-  <tr>
-    <td class="tg-c3ow">D_sacked</td>
-    <td class="tg-vr9o">D_INT</td>
-  </tr>
-  <tr>
-    <td class="tg-c3ow">D_rushing_lng</td>
-    <td class="tg-c3ow">D_passing_td</td>
+    <td class="tg-s8l9">D_datediff</td>
+    <td class="tg-s8l9">D_datediff</td>
   </tr>
   <tr>
     <td class="tg-c3ow">D_passing_int</td>
-    <td class="tg-vr9o">D_tackles_solo</td>
+    <td class="tg-c3ow">D_Penalties</td>
   </tr>
   <tr>
-    <td class="tg-vr9o">D_tackles_solo</td>
-    <td class="tg-vr9o">D_Net_Pass_Yards</td>
+    <td class="tg-c3ow">D_rushing_lng</td>
+    <td class="tg-s8l9">D_TD</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">D_passing_att</td>
-    <td class="tg-vr9o">D_TD</td>
+    <td class="tg-c3ow">D_rushing_yds</td>
+    <td class="tg-s8l9">D_Net_Pass_Yards</td>
   </tr>
   <tr>
-    <td class="tg-vr9o">D_Cmp</td>
-    <td class="tg-c3ow">D_rushing_td</td>
-  </tr>
-  <tr>
-    <td class="tg-c3ow">D_passing_sk</td>
-    <td class="tg-c3ow">D_Lost</td>
-  </tr>
-  <tr>
-    <td class="tg-vr9o">D_Third_Down_Conv</td>
+    <td class="tg-s8l9">D_Third_Down_Conv</td>
     <td class="tg-c3ow">D_Att</td>
   </tr>
   <tr>
-    <td class="tg-vr9o">D_TD</td>
-    <td class="tg-c3ow">D_penalties</td>
+    <td class="tg-c3ow">D_fumbles_td</td>
+    <td class="tg-s8l9">D_Third_Down_Conv</td>
   </tr>
   <tr>
-    <td class="tg-vr9o">D_INT</td>
-    <td class="tg-vr9o">D_Third_Down_Conv</td>
+    <td class="tg-c3ow">D_def_interceptions_yds</td>
+    <td class="tg-s8l9">D_fumbles_ff</td>
   </tr>
   <tr>
-    <td class="tg-vr9o">D_datediff</td>
-    <td class="tg-vr9o">D_datediff</td>
+    <td class="tg-c3ow">D_TDs</td>
+    <td class="tg-c3ow">D_tackles_comb</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">D_passing_sk</td>
+    <td class="tg-c3ow">D_rushing_att</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">D_passing_lng</td>
+    <td class="tg-c3ow">D_fumbles_yds</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">D_Yd</td>
+    <td class="tg-c3ow">D_passing_td</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">D_Cmp</td>
+    <td class="tg-c3ow">D_Fourth_Down_Conv</td>
+  </tr>
+  <tr>
+    <td class="tg-s8l9">D_fumbles_ff</td>
+    <td class="tg-c3ow">D_def_interceptions_td</td>
+  </tr>
+  <tr>
+    <td class="tg-s8l9">D_Net_Pass_Yards</td>
+    <td class="tg-c3ow">D_punting_avg</td>
+  </tr>
+  <tr>
+    <td class="tg-s8l9">D_TD</td>
+    <td class="tg-c3ow">D_receiving_lng</td>
   </tr>
 </tbody></table>
+<br/><br/><br/><br/>
 
+## Summary of columns being removed
+{% highlight python %}
+    drop_cols = [
 
+        # Removed based off of correlation matrix results
+        'D_passing_yds', 'D_receiving_yds', 'D_def_interceptions_lng', 'D_receiving_td',
 
-## Column definitions after EDA
+        # Removed after composing meta-features from pairs of similar columns
+        'D_scoring_fgm', 'D_scoring_xpm', 'D_punting_yds', 
+
+        # Removed after applying UMAP
+        'D_kick_returns_lng', 'D_kick_returns_rt', 'D_kick_returns_td', 'D_kick_returns_yds',
+        'D_punt_returns_lng', 'D_punt_returns_ret', 'D_punt_returns_td', 'D_punt_returns_yds',
+
+        # Created temporarily for UMAP
+        'D_kick_punt_returns_lng', 'D_kick_punt_returns_rt', 'D_kick_punt_returns_td', 'D_kick_punt_returns_yds',
+
+        # Removed from feature importance using Leshy & BoostAGroota
+        'D_datediff', 'D_Third_Down_Conv', 'D_fumbles_ff', 'D_Net_Pass_Yards', 'D_TD'
+    ]
+{% endhighlight %}
+
+## The list of cont_cols after EDA
 {% highlight python %}
 cont_cols = [
-    # 'D_datediff',              # Days since last game (Home - visitor)
-    
     # first downs
     'D_First_Downs',
     
@@ -341,20 +359,17 @@ cont_cols = [
     'D_Rush',                  # Number of running plays attempted
     'D_Yds',                   # Yards gained through running plays
     'D_TDs',                   # Touchdowns scored via running plays
-    # 'D_Cmp',                   # Completions (# of successful passes)
+    'D_Cmp',                   # Completions (# of successful passes)
     'D_Att',                   # Attempts (# of passes thrown, completed or not)
     'D_Yd',                    # Yards (Yards the passes have covered)
-    # 'D_TD',                    # Touchdowns
-    # 'D_INT',                   # Interceptions
+    'D_INT',                   # Interceptions
     'D_Sacked',                # Number of times quarterback was tackled behind line of scrimmage
     'D_Sacked_Yards',                 # Yards lost from sacks
-    # 'D_Net_Pass_Yards',        # Net passing yards (total yds - yards lost due to sacks)
     'D_Total_Yards',           # Total yards gained (net pass yards + rushing yds)
     'D_Fumbles',               # Number of times ball was fumbled
     'D_Lost',                  # Number of times the team lost possession of the ball due to a fumble
     'D_Turnovers',             # Total number of turnovers, includes interceptions & fumbles lost
     'D_Penalties',             # Number of penalties committed by the team
-    # 'D_Third_Down_Conv',       # 3rd down conversion percentage
     'D_Fourth_Down_Conv',      # 3rd down conversion percentage
     'D_Time_of_Possession',    # Time of possession in minutes
     
@@ -366,12 +381,9 @@ cont_cols = [
     'D_passing_lng',           # Longest completed pass
     'D_passing_sk',            # Passing times sacked
     'D_passing_td',            # Passing touchdowns
-    # 'D_passing_yds',           # Yards gained by passing
     
     # Receiving
     'D_receiving_lng',         # Longest reception
-    # 'D_receiving_td',          # Receiving touchdowns
-    # 'D_receiving_yds',         # Receiving yards
     
     # Rushing Detailed
     'D_rushing_att',           # Rushing attempts (sacks not included)
@@ -381,12 +393,10 @@ cont_cols = [
     
     # Defense interceptions
     'D_def_interceptions_int', # Passes intercepted on defense
-    # 'D_def_interceptions_lng', # Longest interception returned
     'D_def_interceptions_td',  # Interceptions returned for touchdown
     'D_def_interceptions_yds', # Yards interceptions were returned
     
     # Defense fumbles
-    'D_fumbles_ff',            # Num of times forced a fumble by the opposition recovered by either team
     'D_fumbles_fr',            # Fumbles recovered by player or team
     'D_fumbles_td',            # Fumbles recovered resulting in touchdown for receiver
     'D_fumbles_yds',           # Yards recovered fumbles were returned
@@ -398,38 +408,19 @@ cont_cols = [
     # 'D_tackles_solo',          # Tackles
 
     # ----------------- Kick & Punt returns are combined in EDA ----------------
-    ## Kick Returns
-    #'D_kick_returns_lng',      # Longest kickoff return
-    #'D_kick_returns_rt',       # Kickoff returns 
-    #'D_kick_returns_td',       # Kickoffs returned for a touchdown
-    #'D_kick_returns_yds',      # Yardage for kickoffs returned
-    ## Punt Returns
-    #'D_punt_returns_lng',      # Longest punt return
-    #'D_punt_returns_ret',      # Punts returned
-    #'D_punt_returns_td',       # Punts returned for touchdown
-    #'D_punt_returns_yds',      # Punts return yardage
-    
-    # Kick & Punt returns combined (Created as a result of EDA)
-    #'kick_punt_returns_lng',   # Does not appear on final CSV (UMAP)
-    #'kick_punt_returns_rt',    # Does not appear on final CSV (UMAP)
-    #'kick_punt_returns_td',    # Does not appear on final CSV (UMAP)
-    #'kick_punt_returns_yds',   # Does not appear on final CSV (UMAP)
     'kick_punt_umap_dim_1',  # Appears on final CSV (UMAP)
     'kick_punt_umap_dim_2',  # Appears on final CSV (UMAP)
     
     # Punting / Scoring
-    # 'D_punting_lng',         # Longest punt
+    'D_punting_lng',         # Longest punt
     
     'D_punting_pnt',           # Times punted
-    # 'D_punting_yds',         # Total punt yardage
     'D_punting_avg',           # Total punt yardage / number of punts
     
     'D_scoring_fga',           # Field goals attempted
-    # 'D_scoring_fgm',         # Field goals made
     'D_scoring_fgp',           # Field goals made / Field goals attempted
 
     'D_scoring_xpa',           # Extra points attempted
-    # 'D_scoring_xpm',         # Extra points made
     'D_scoring_xpp',           # Extra pints made / Extra points attempted
     
     # Additional, calculated metrics

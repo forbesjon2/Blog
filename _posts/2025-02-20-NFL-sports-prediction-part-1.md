@@ -242,7 +242,119 @@ for row in df.itertuples():
         else:
             track_dict[visitor_column_name] = [getattr(row, visitor_col)]
 {% endhighlight %}
-<br /><br /><br />
+<br /><br />
+
+#### Example output
+
+**Sample of section 5 - the track_cols array**
+{% highlight python %}
+track_dict['1999_NWE_Rush']
+# Prints: [27, 121, 57, 35, 19, 122, 133, 43, 188, 19, 25, 63, 20, 27, 168, 119]
+{% endhighlight %}
+<br />
+<br />
+<br />
+<br />
+
+**Sample of section 6 - the EMA calculation using section 5's track_cols example**
+
+{% highlight python %}
+# The following for the home (or visitor) column
+ema = dataframe_val['value'].ewm(span=min(ema_span, len(home_col_list)), adjust=True).mean().iloc[-1]
+
+track_cols: [27, 121, 57, 35, 19] ema: 41.786729857819914
+track_cols: [27, 121, 57, 35, 19, 122] ema: 69.42580177213205
+track_cols: [27, 121, 57, 35, 19, 122, 133] ema: 86.98844826371769
+track_cols: [27, 121, 57, 35, 19, 122, 133, 43] ema: 74.7679016532429
+track_cols: [27, 121, 57, 35, 19, 122, 133, 43, 188] ema: 105.37397354626104
+track_cols: [27, 121, 57, 35, 19, 122, 133, 43, 188, 19] ema: 82.49191078161586
+track_cols: [27, 121, 57, 35, 19, 122, 133, 43, 188, 19, 25] ema: 67.48511920246085
+track_cols: [27, 121, 57, 35, 19, 122, 133, 43, 188, 19, 25, 63] ema: 66.32715946145998
+track_cols: [27, 121, 57, 35, 19, 122, 133, 43, 188, 19, 25, 63, 20] ema: 54.46352202940719
+track_cols: [27, 121, 57, 35, 19, 122, 133, 43, 188, 19, 25, 63, 20, 27] ema: 47.47308630166649
+{% endhighlight %}
+
+
+
+
+<br />
+<br />
+
+
+
+<br />
+Or in table form
+<br />
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-fymr{border-color:inherit;font-weight:bold;text-align:left;vertical-align:top}
+.tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
+</style>
+<table class="tg"><thead>
+  <tr>
+    <th class="tg-fymr">1999 Season Patriots game (home or visitor) </th>
+    <th class="tg-fymr">Rush stat (# of running plays attempted)</th>
+    <th class="tg-fymr">EMA</th>
+  </tr></thead>
+<tbody>
+  <tr>
+    <td class="tg-0pky">1</td>
+    <td class="tg-0pky">27</td>
+    <td class="tg-0pky">Below minimum window (4)</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">2</td>
+    <td class="tg-0pky">121</td>
+    <td class="tg-0pky"><span style="font-weight:400;font-style:normal;text-decoration:none">Below minimum window (4)</span></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">3</td>
+    <td class="tg-0pky">57</td>
+    <td class="tg-0pky"><span style="font-weight:400;font-style:normal;text-decoration:none">Below minimum window (4)</span></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">4</td>
+    <td class="tg-0pky">35</td>
+    <td class="tg-0pky"><span style="font-weight:400;font-style:normal;text-decoration:none">Below minimum window (4)</span></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">5</td>
+    <td class="tg-0pky">19</td>
+    <td class="tg-0pky">41.79</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">6</td>
+    <td class="tg-0pky">122</td>
+    <td class="tg-0pky">69.43</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">7</td>
+    <td class="tg-0pky">133</td>
+    <td class="tg-0pky">86.98</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">8</td>
+    <td class="tg-0pky">43</td>
+    <td class="tg-0pky">74.77</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">9</td>
+    <td class="tg-0pky">188</td>
+    <td class="tg-0pky">105.37</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">10</td>
+    <td class="tg-0pky">19</td>
+    <td class="tg-0pky">82.49</td>
+  </tr>
+</tbody></table>
+
+<br />
 
 
 ## 6. Use track_dict to reformat df
@@ -305,7 +417,7 @@ for row in df.itertuples():
             # Update Visitor
             visitor_col_list = track_dict[f'{year}_{visitor_team}_{col}'][:visitor_date_index-1]
             dataframe_val = pd.DataFrame({'value': visitor_col_list})
-            ema = dataframe_val['value'].ewm(span=min(minimum_window, len(visitor_col_list)), adjust=False).mean().iloc[-1]
+            ema = dataframe_val['value'].ewm(span=min(ema_span, len(visitor_col_list)), adjust=True).mean().iloc[-1]
             df.at[index, 'V_' + col] = ema
 
 
